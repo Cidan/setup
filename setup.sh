@@ -53,8 +53,7 @@ function install_vscode_pkg {
   done
 
 }
-install_vscode_pkg
-exit
+
 function install_desktop {
   echo -e "Installing desktop deps...\n"
   cd /tmp/setup_packages/
@@ -69,9 +68,13 @@ function install_desktop {
     sudo dpkg -i $i || true
   done
   sudo apt-get install -f -y
+  
   install_vscode_pkg
+
   if [ ! -f ~/.config/Code/User/settings.json ]; then
     echo "Installing default vscode settings."
+    curl -sfLo ~/.config/Code/User/settings.json --create-dirs \
+      https://raw.githubusercontent.com/Cidan/setup/master/settings.json
   fi
 }
 
