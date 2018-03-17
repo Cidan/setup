@@ -15,6 +15,10 @@ declare -a apt_packages=(
   "openjdk-9-jdk-headless"
   "python-pip"
   "python3-pip"
+  "htop"
+  "iftop"
+  "atop"
+  "lib32stdc++6"
 )
 
 declare -a pip_packages=(
@@ -68,13 +72,26 @@ function install_desktop {
     sudo dpkg -i $i || true
   done
   sudo apt-get install -f -y
-  
-  install_vscode_pkg
 
   if [ ! -f ~/.config/Code/User/settings.json ]; then
     echo "Installing default vscode settings."
     curl -sfLo ~/.config/Code/User/settings.json --create-dirs \
       https://raw.githubusercontent.com/Cidan/setup/master/settings.json
+  fi
+}
+
+function install_flutter {
+  mkdir -p ~/git/
+  cd ~/git
+  if [ ! -f ~/git/flutter/.git/config ]; then
+    echo "Installing flutter"
+    git clone -b beta https://github.com/flutter/flutter.git
+    export PATH=`pwd`/flutter/bin:$PATH
+  fi
+
+  if ! grep -Fxq "flutter/bin" ~/.profile; then
+    echo "Updating path for flutter"
+    echo 'PATH=$PATH:~/git/flutter/bin' >> ~/.profile
   fi
 }
 
@@ -241,26 +258,28 @@ export PATH=$PATH:/usr/local/node/bin
     . /etc/profile.d/node.sh
   fi
 }
+
 mkdir -p /tmp/setup_packages/
 rm -f /tmp/setup_packages/* || true
 
-## Knock u2f out first
+## Kick off our installs
 u2f
 install_apt
 install_pip
 base_profile
-
-## Check for our desktop apps
-if [[ "$1" == "--desktop" ]]; then
-  install_desktop
-fi
-
-## Install everything else
 cloud_sdk
 github
 install_go
 install_node
 install_vim
+
+## Check for our desktop apps
+if [[ "$1" == "--desktop" ]]; then
+  install_desktop
+  install_vscode_pkg
+  install_flutter
+  ## TODO: install https://dl.google.com/dl/android/studio/ide-zips/3.0.1.0/android-studio-ide-171.4443003-linux.zip
+fi
 
 echo -e "You're all set -- be sure to setup this key on GitHub:\n\n"
 
