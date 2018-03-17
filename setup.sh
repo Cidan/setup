@@ -117,6 +117,9 @@ function install_flutter {
 }
 
 function base_profile {
+  if grep -Fxq "set meta-flag on" /etc/bash.bashrc; then
+    return
+  fi
   cat <<EOF > /tmp/profile.sh
 force_color_prompt=yes
 export EDITOR=vim
@@ -129,7 +132,7 @@ bind '"\e[B": history-search-forward'
 
 set show-all-if-ambiguous on
 EOF
-  sudo mv /tmp/profile.sh /etc/profile.d/base_profile.sh
+  cat /tmp/profile.sh | sudo tee -a /etc/bash.bashrc
 }
 
 ## Install u2f udev rules and reload
@@ -223,13 +226,9 @@ function install_vim {
     nvim +PlugInstall +qall
   fi
 
-  if [ ! -f /etc/profile.d/vim.sh ]; then
+  if ! grep -Fxq "alias vim=nvim" /etc/bash.bashrc; then
     echo "Setting up vim alias"
-    echo '
-alias vim=nvim
-' >/tmp/vim.sh
-    sudo mv /tmp/vim.sh /etc/profile.d/vim.sh
-    . /etc/profile.d/vim.sh
+    echo "alias vim=nvim" | sudo tee -a /etc/bash.bashrc
   fi
 }
 
@@ -248,10 +247,7 @@ function install_go {
     echo "Go profile already set, skipping."
   else
     echo "Setting up go profile"
-    echo '
-export PATH=$PATH:/usr/local/go/bin
-' > /tmp/go.sh
-    sudo mv /tmp/go.sh /etc/profile.d/go.sh
+    echo 'export PATH=$PATH:/usr/local/go/bin' | sudo tee /etc/profile.d/go.sh
     . /etc/profile.d/go.sh
   fi
 }
@@ -272,10 +268,7 @@ function install_node {
     echo "Node profile already set, skipping."
   else
     echo "Setting up node profile"
-    echo '
-export PATH=$PATH:/usr/local/node/bin
-' > /tmp/node.sh
-    sudo mv /tmp/node.sh /etc/profile.d/node.sh
+    echo 'export PATH=$PATH:/usr/local/node/bin' | sudo tee /etc/profile.d/node.sh
     . /etc/profile.d/node.sh
   fi
 }
