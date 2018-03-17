@@ -12,7 +12,7 @@ declare -a apt_packages=(
   "cmake"
   "python-dev"
   "python3-dev"
-  "openjdk-9-jdk-headless"
+  "openjdk-8-jdk-headless"
   "python-pip"
   "python3-pip"
   "htop"
@@ -114,6 +114,19 @@ function install_flutter {
     echo "Updating path for flutter"
     echo 'PATH=$PATH:~/git/flutter/bin' >> ~/.profile
   fi
+}
+
+function install_android_sdk {
+  if [ -d ~/Android/Sdk ]; then
+    return
+  fi
+  echo "Downloading Android Studio"
+  curl -sfLo /tmp/android-tools.zip \
+    https://dl.google.com/dl/android/studio/ide-zips/3.0.1.0/android-studio-ide-171.4443003-linux.zip
+  echo "Installing Android Studio"
+  mkdir -p ~/.android_studio
+  cd ~/.android_studio
+  unzip /tmp/android-tools.zip
 }
 
 function base_profile {
@@ -293,7 +306,7 @@ if [[ "$1" == "--desktop" ]]; then
   install_desktop
   install_vscode_pkg
   install_flutter
-  ## TODO: install https://dl.google.com/dl/android/studio/ide-zips/3.0.1.0/android-studio-ide-171.4443003-linux.zip
+  install_android_sdk
 fi
 
 echo -e "You're all set -- be sure to setup this key on GitHub:\n\n"
