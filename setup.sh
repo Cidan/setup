@@ -83,6 +83,12 @@ function install_desktop {
     curl -sfLo ~/.config/Code/User/settings.json --create-dirs \
       https://raw.githubusercontent.com/Cidan/setup/master/settings.json
   fi
+
+  if [ ! -f !/.config/Code/User/keybindings.json ]; then
+    echo "Installing default vscode key bindings."
+    curl -sfLo ~/.config/Code/User/keybindings.json --create-dirs \
+      https://raw.githubusercontent.com/Cidan/setup/master/keybindings.json
+  fi
 }
 
 function install_docker {
