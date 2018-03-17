@@ -106,6 +106,10 @@ function install_docker {
   sudo apt-get update
   sudo apt-get install -y docker-ce
   sudo adduser $USER docker
+
+  sudo curl -sfLo /usr/local/bin/docker-compose \
+    https://github.com/docker/compose/releases/download/1.19.0/docker-compose-Linux-x86_64
+  sudo chmod +x /usr/local/bin/docker-compose
 }
 
 function install_flutter {
