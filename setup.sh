@@ -19,6 +19,10 @@ declare -a apt_packages=(
   "iftop"
   "atop"
   "lib32stdc++6"
+  "apt-transport-https"
+  "ca-certificates"
+  "curl"
+  "software-properties-common"
 )
 
 declare -a pip_packages=(
@@ -78,6 +82,23 @@ function install_desktop {
     curl -sfLo ~/.config/Code/User/settings.json --create-dirs \
       https://raw.githubusercontent.com/Cidan/setup/master/settings.json
   fi
+}
+
+function install_docker {
+  if [ "($command -v docker)" ]; then
+    echo "Docker already installed, skipping."
+    return
+  fi
+
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+  
+  sudo apt-get update
+  sudo apt-get install -y docker-ce
+  sudo adduser $USER docker
 }
 
 function install_flutter {
@@ -266,6 +287,7 @@ rm -f /tmp/setup_packages/* || true
 u2f
 install_apt
 install_pip
+install_docker
 base_profile
 cloud_sdk
 github
