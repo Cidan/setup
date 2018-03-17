@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+node_version="v8.10.0"
+
 function join_by { local IFS="$1"; shift; echo "$*"; }
 
 declare -a apt_packages=(
@@ -174,6 +176,30 @@ export PATH=$PATH:/usr/local/go/bin
     . /etc/profile.d/go.sh
   fi
 }
+
+## Install Node
+function install_node {
+  echo "Installing Node"
+  if [ -f /usr/local/node/bin/node ]; then
+    echo "Node already installed, skipping."
+  else
+    curl -sfLo /tmp/node.tar.xz https://nodejs.org/dist/${node_version}/node-${node_version}-linux-x64.tar.xz
+    cd /usr/local
+    sudo tar -xf /tmp/node.tar.xz
+    sudo mv node-${node_version}-linux-x64 node
+  fi
+
+  if [ -f /etc/profile.d/node.sh ]; then
+    echo "Node profile already set, skipping."
+  else
+    echo "Setting up node profile"
+    echo '
+export PATH=$PATH:/usr/local/node/bin
+' > /tmp/node.sh
+    sudo mv /tmp/node.sh /etc/profile.d/node.sh
+    . /etc/profile.d/node.sh
+  fi
+}
 mkdir -p /tmp/setup_packages/
 rm -f /tmp/setup_packages/* || true
 
@@ -191,9 +217,12 @@ fi
 cloud_sdk
 github
 install_go
+install_node
 ## TODO: port to repo
 install_vim
 
 echo -e "You're all set -- be sure to setup this key on GitHub:\n\n"
 
 cat ~/.ssh/id_github.pub
+
+exec -l $SHELL
