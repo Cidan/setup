@@ -140,7 +140,7 @@ function install_vim {
   else
     echo "Installing Neo Vim config"
     curl -sfLo ~/.config/nvim/init.vim --create-dirs \
-      https://raw.githubusercontent.com/Cidan/vim/master/init.vim
+      https://raw.githubusercontent.com/Cidan/setup/master/init.vim
     nvim +PlugInstall +qall
   fi
 
