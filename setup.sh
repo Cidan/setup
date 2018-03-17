@@ -11,6 +11,12 @@ declare -a apt_packages=(
   "python-dev"
   "python3-dev"
   "openjdk-9-jdk-headless"
+  "python-pip"
+  "python3-pip"
+)
+
+declare -a pip_packages=(
+  "neovim"
 )
 
 declare -a desktop_packages=(
@@ -38,6 +44,11 @@ function install_desktop {
     sudo dpkg -i $i || true
   done
   sudo apt-get install -f -y
+}
+
+function install_pip {
+  PK=$(join_by ' ' "${pip_packages[@]}")
+  sudo pip install --upgrade $PK
 }
 
 ## Install u2f udev rules and reload
@@ -128,16 +139,48 @@ function install_vim {
     echo "Installing Neo Vim config"
     curl -sfLo ~/.config/nvim/init.vim --create-dirs \
       https://raw.githubusercontent.com/Cidan/vim/master/init.vim
-    nvim +PlugInstall
+    nvim +PlugInstall +qall
+  fi
+
+  if [ ! -f /etc/profile.d/vim.sh ]; then
+    echo "Setting up vim alias"
+    echo '
+alias vim=nvim
+' >/tmp/vim.sh
+    sudo mv /tmp/vim.sh /etc/profile.d/vim.sh
+    . /etc/profile.d/vim.sh
   fi
 }
 
+## Install Golang
+function install_go {
+  echo "Installing go"
+  if [ -f /usr/local/go/bin/go ]; then
+    echo "Golang already installed, skipping."
+  else
+    curl -sfLo /tmp/go.tar.gz https://dl.google.com/go/go1.10.linux-amd64.tar.gz
+    cd /usr/local/
+    sudo tar -xzf /tmp/go.tar.gz
+  fi
+
+  if [ -f /etc/profile.d/go.sh ]; then
+    echo "Go profile already set, skipping."
+  else
+    echo "Setting up go profile"
+    echo '
+export PATH=$PATH:/usr/local/go/bin
+' > /tmp/go.sh
+    sudo mv /tmp/go.sh /etc/profile.d/go.sh
+    . /etc/profile.d/go.sh
+  fi
+}
 mkdir -p /tmp/setup_packages/
 rm -f /tmp/setup_packages/* || true
 
 ## Knock u2f out first
 u2f
 install_apt
+install_pip
 
 ## Check for our desktop apps
 if [[ "$1" == "--desktop" ]]; then
@@ -147,10 +190,10 @@ fi
 ## Install everything else
 cloud_sdk
 github
-#install_go
+install_go
 ## TODO: port to repo
-#install_vim
+install_vim
 
-echo "You're all set -- be sure to setup this key on GitHub:"
+echo -e "You're all set -- be sure to setup this key on GitHub:\n\n"
 
 cat ~/.ssh/id_github.pub
