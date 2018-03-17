@@ -42,6 +42,7 @@ declare -a vscode_packages=(
   "lukehoban.go"
   "ms-python.python"
   "alefragnani.project-manager"
+  "Dart-Code.dart-code"
 )
 
 function install_apt {
