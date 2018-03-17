@@ -1,0 +1,27 @@
+// Place your settings in this file to overwrite the default settings
+{
+  "go.buildOnSave": true,
+  "go.lintOnSave": true,
+  "go.vetOnSave": true,
+  "go.buildTags": "",
+  "go.buildFlags": [],
+  "go.lintFlags": [],
+  "go.vetFlags": [],
+  "go.coverOnSave": false,
+  "go.useCodeSnippetsOnFunctionSuggest": false,
+  "go.formatOnSave": true,
+  "go.formatTool": "goreturns",
+  "go.gocodeAutoBuild": false,
+  "editor.tabSize": 2,
+  "amVim.bindCtrlCommands": false,
+  "vim.useCtrlKeys": false,
+  "files.eol": "\n",
+  "workbench.iconTheme": "vscode-icons",
+  "vsicons.dontShowNewVersionMessage": true,
+  "git.enableSmartCommit": true,
+  "csharp.suppressDotnetInstallWarning": true,
+  "csharp.referencesCodeLens.enabled": false,
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "java.saveActions.organizeImports": true
+}

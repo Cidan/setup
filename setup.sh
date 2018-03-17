@@ -26,12 +26,35 @@ declare -a desktop_packages=(
   "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
 )
 
+declare -a vscode_packages=(
+  "auiworks.amvim"
+  "fallenwood.viml"
+  "robertohuertasm.vscode-icons"
+  "redhat.java"
+  "lukehoban.go"
+  "ms-python.python"
+  "alefragnani.project-manager"
+)
+
 function install_apt {
   PK=$(join_by ' ' "${apt_packages[@]}")
   sudo apt-get update
   sudo apt-get install -y $PK
 }
 
+function install_pip {
+  PK=$(join_by ' ' "${pip_packages[@]}")
+  sudo pip install --upgrade $PK
+}
+
+function install_vscode_pkg {
+  for i in ${vscode_packages[@]}; do
+    code --install-extension $i
+  done
+
+}
+install_vscode_pkg
+exit
 function install_desktop {
   echo -e "Installing desktop deps...\n"
   cd /tmp/setup_packages/
@@ -46,11 +69,26 @@ function install_desktop {
     sudo dpkg -i $i || true
   done
   sudo apt-get install -f -y
+  install_vscode_pkg
+  if [ ! -f ~/.config/Code/User/settings.json ]; then
+    echo "Installing default vscode settings."
+  fi
 }
 
-function install_pip {
-  PK=$(join_by ' ' "${pip_packages[@]}")
-  sudo pip install --upgrade $PK
+function base_profile {
+  cat <<EOF > /tmp/profile.sh
+force_color_prompt=yes
+export EDITOR=vim
+set meta-flag on
+set input-meta on
+set convert-meta off
+set output-meta on
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
+
+set show-all-if-ambiguous on
+EOF
+  sudo mv /tmp/profile.sh /etc/profile.d/base_profile.sh
 }
 
 ## Install u2f udev rules and reload
@@ -207,6 +245,7 @@ rm -f /tmp/setup_packages/* || true
 u2f
 install_apt
 install_pip
+base_profile
 
 ## Check for our desktop apps
 if [[ "$1" == "--desktop" ]]; then
@@ -218,7 +257,6 @@ cloud_sdk
 github
 install_go
 install_node
-## TODO: port to repo
 install_vim
 
 echo -e "You're all set -- be sure to setup this key on GitHub:\n\n"
