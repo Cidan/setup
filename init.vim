@@ -17,7 +17,7 @@ try
 	colorscheme codedark
 	let g:airline_theme = 'codedark'
 catch /.*/
-
+" cached for some reason
 endtry
 
 " Keymap
