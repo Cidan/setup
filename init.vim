@@ -17,7 +17,7 @@ try
 	colorscheme codedark
 	let g:airline_theme = 'codedark'
 catch /.*/
-	echom "Color theme not installed, skipping"
+
 endtry
 
 " Keymap
