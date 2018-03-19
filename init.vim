@@ -13,8 +13,12 @@ Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
 call plug#end()
 
 " Color
-colorscheme codedark
-let g:airline_theme = 'codedark' 
+try
+	colorscheme codedark
+	let g:airline_theme = 'codedark'
+catch /.*/
+	echom "Color theme not installed, skipping"
+endtry
 
 " Keymap
 nmap <silent> <C-k> <Plug>(ale_previous_wrap)
