@@ -232,7 +232,9 @@ function install_vim {
     sudo curl -fLo /usr/local/bin/nvim https://github.com/neovim/neovim/releases/download/v0.2.2/nvim.appimage
     sudo chmod +x /usr/local/bin/nvim
   fi
-
+  
+  mkdir -p ~/.local/share/nvim/site/autoload/
+  
   if [ -f ~/.local/share/nvim/site/autoload/plug.vim ]; then
     echo "vim plug already installed, skipping."
   else
