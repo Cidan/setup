@@ -23,6 +23,7 @@ declare -a apt_packages=(
   "ca-certificates"
   "curl"
   "software-properties-common"
+  "fuse"
 )
 
 declare -a pip_packages=(
