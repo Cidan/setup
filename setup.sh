@@ -225,6 +225,11 @@ Host github.com
 
 ## Install vim and all packages
 function install_vim {
+  if [ ! "($command -v gcloud)" ]; then
+    echo "NO MODPROBE SUPPORT, in a container? skipping vim"
+    return
+  fi
+  
   if [ -f /usr/local/bin/nvim ]; then
     echo "Neo Vim already installed, skipping."
   else
