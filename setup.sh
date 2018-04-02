@@ -23,6 +23,7 @@ declare -a apt_packages=(
   "curl"
   "software-properties-common"
   "fuse"
+  "unzip"
 )
 
 declare -a pip_packages=(
