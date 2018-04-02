@@ -17,7 +17,6 @@ declare -a apt_packages=(
   "python3-pip"
   "htop"
   "iftop"
-  "atop"
   "lib32stdc++6"
   "apt-transport-https"
   "ca-certificates"
