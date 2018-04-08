@@ -279,7 +279,11 @@ function install_go {
     echo "Go profile already set, skipping."
   else
     echo "Setting up go profile"
-    echo 'export PATH=$PATH:/usr/local/go/bin' | sudo tee /etc/profile.d/go.sh
+    echo '
+    export PATH=$PATH:/usr/local/go/bin
+    export GOPATH=~/go
+    export PATH=$PATH:~/go/bin
+    ' | sudo tee /etc/profile.d/go.sh
     . /etc/profile.d/go.sh
   fi
 }
