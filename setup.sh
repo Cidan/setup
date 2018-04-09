@@ -282,7 +282,8 @@ function install_go {
     echo '
     export PATH=$PATH:/usr/local/go/bin
     export GOPATH=~/go
-    export PATH=$PATH:~/go/bin
+    export GOBIN=~/go/bin
+    export PATH=$PATH:$GOBIN
     ' | sudo tee /etc/profile.d/go.sh
     . /etc/profile.d/go.sh
   fi
